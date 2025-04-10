@@ -1,0 +1,35 @@
+#################################################################################################
+# An example input file for FORTRAN program pecfs for postprocessing of output of POEL          #
+# related to injection-induced Coulomb-Failure-Stress (CFS) change                              #
+#                                                                                               #
+# All comment lines should start with '#'                                                       #
+#                                                                                               #
+# Copyright by                                                                                  #
+# Dr. Rongjiang Wang                                                                            #
+# Helmholtz Centre Potsdam                                                                      #
+# GFZ German Research Centre For Geosciences                                                    #
+# Public Law Foundation State of Brandenburg                                                    #
+# Telegrafenberg, 14473 Potsdam                                                                 #
+#                                                                                               #
+# Last edited on May 19, 2024                                                                   #
+#################################################################################################
+#
+# Location of injection site (lat,lon)[deg]
+  29.22961  105.30573
+# Location of receiver fault (lat,lon)[deg]
+  29.24040  105.28200
+# Receiver-site shear modulus (mu)[Pa]
+  1.0E+10
+# Receiver-site drained Poisson ratio (nu)
+  0.20
+# Receiver fault mechanism (strike,dip,rake)[deg]
+  139.0  50.0  119.0
+# Receiver fault friction coefficient (friction)
+  0.40
+# Injection-induced pore pressure (Pp)[Pa]
+  3782.7564
+# Injection induced strain tensor in cylindrical
+# coordinate (z/r/t = down/radial/azimuth)
+# (Ezz,Err,Ett,Ezr,Ert,Etz)[Pa]
+  0.23048622E-06  -0.93745276E-06  0.32521865E-05  0.46949272E-05  0.00000000E-00  0.00000000E-00
+#################################################################################################
