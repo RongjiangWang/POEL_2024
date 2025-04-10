@@ -1,0 +1,251 @@
+# This is the input file of FORTRAN program "poel2024" for modeling
+# coupled deformation-diffusion processes based on a multi-layered
+# (half- or full-space) poroelastic media induced by an injection
+# (pump) from a borehole, by confining pressure change or by
+# reservoir water loading.
+#
+# by Rongjiang Wang,
+# GeoForschungsZentrum Potsdam
+# e-mail: wang@gfz-potsdam.de
+#
+# Last modified: Beijing, 2024
+#
+##############################################################
+##                                                          ##
+## Cylindrical coordinates (Z positive downwards!) are used ##
+## If not others specified, SI Unit System is used overall! ##
+##                                                          ##
+## Tilt is positive when the upper end of a borehole tilt-  ##
+## meter body moves away from the pumping well.             ##
+##                                                          ##
+##############################################################
+#
+################################################################################
+#
+#	SOURCE PARAMETERS A: SOURCE GEOMETRY
+#	====================================
+# 1. source top and bottom depth [m]
+#    Note: top depth < bottom depth, except for source type Option 0, for which
+#          a vertial point source is allowed.
+#
+#    !  whole source screen should be within a homogeneous layer (see below) !
+#
+# 2. source radius [m]
+#    Note: source radius always > 0 in all cases.
+#-------------------------------------------------------------------------------
+    3990.9  3999.9        |dble: s_top_depth, s_bottom_depth;
+    500.0                 |dble: s_radius;
+#-------------------------------------------------------------------------------
+#
+#	SOURCE PARAMETERS B: SOURCE TYPE
+#	================================
+# 1. selection of source type:
+#    0 = loading force [N] (e.g., water level change * gravity * horizontal
+#        area of source)
+#    1 = local matrix volume change (s. Note below) within the finite
+#        source volume [m^3] (matrix volume strain * volume of source)
+#    2 = injection given by known injection rate [m^3/s]
+#    3 = injection given by known injection moment [N*m]
+#        (injection pressure * volume of source)
+#
+#    Note: Option 1 is used to solve the coupled poroelastic process using a
+#          decoupled system of equations of motion. First, the elastic volume
+#          strain (Epsilon) is calculated under drained conditions (in the case
+#          of a loading problem, e.g, Epsilon can be calculated using Option 0
+#          for a model with nu_u = nu, i.e., identical Poisson ratio under drained
+#          and undrained conditions). Then, the local matrix volume change dV is
+#          obtained by dV = Epsilon * V, where V is volume of the cylindrical
+#          source.
+#-------------------------------------------------------------------------------
+    2                     |int: sw_source_type;
+#-------------------------------------------------------------------------------
+#
+#	SOURCE PARAMETERS C: SOURCE TIME HISTORY
+#	========================================
+#   1. number of data lines describing the source time history
+#   2. listing of the injection rate time series
+#-------------------------------------------------------------------------------
+#    2                      |int: no_data_lines;
+#-------------------------------------------------------------------------------
+#   no    time       source moment (pressure*volume)
+#  [-]    [s]        [Nm]
+#-------------------------------------------------------------------------------
+#  1  0.00E+00        0.0E+00
+#  2  0.10E+08        7.0E+06
+#-------------------------------------------------------------------------------
+    13                    |int: no_data_lines;
+#-------------------------------------------------------------------------------
+#   no    time       injection rate (+/ = injection/pumping)
+#  [-]    [s]        [m^3/s]
+#-------------------------------------------------------------------------------
+  1  0.000000E+00    0.0000
+  2  0.103680E+07    0.0000
+  3  0.103680E+07    6.4650
+  4  0.362880E+07    6.4650  !0.1676E+08
+  5  0.362880E+07    0.0000
+  6  0.518400E+07    0.0000
+  7  0.518400E+07    3.5584
+  8  0.933120E+07    3.5584  !0.1476E+08
+  9  0.933120E+07    0.0000
+ 10  0.114048E+08    0.0000
+ 11  0.114048E+08    2.5019
+ 12  0.165888E+08    2.5019  !0.1297E+08
+ 13  0.165888E+08    0.0000
+################################################################################
+#
+#	RECEIVER PARAMETERS A: RECEIVER DEPTH SAMPLING
+#	==============================================
+# 1. switch for equidistant steping (1/0 = yes/no)
+# 2. number of receiver depth samples
+# 3. if equidistant, start depth [m], end depth [m]; else list of depths
+#    (all >= 0 and ordered from small to large!)
+#-------------------------------------------------------------------------------
+   0                               |int: sw_receiver_depth_sampling;
+   1                               |int: no_depths;
+   0.0                             |dble: zr_1,zr_n; or zr_1,zr_2,...,zr_n;
+#-------------------------------------------------------------------------------
+#
+#	RECEIVER PARAMETERS B: RECEIVER DISTANCE SAMPLING
+#	=================================================
+# 1. switch for equidistant steping (1/0 = yes/no)
+# 2. number of receiver distance samples
+# 3. if equidistant, start distance [m], end distance [m]; else list of
+#    distances (all >= 0 and ordered from small to large!)
+#-------------------------------------------------------------------------------
+   1                                  |int: sw_receiver_distance_sampling;
+   41                                 |int: no_distances;
+   0.0E+03  10.0E+03                  |dble: r_1,r_n; or r_1,r_2,...,r_n;
+#-------------------------------------------------------------------------------
+#
+#	RECEIVER PARAMETERS C: Time SAMPLING
+#	====================================
+# 1. time window [s]
+# 2. number of time samples
+#    Note: the caracteristic diffusion time =
+#          max_receiver_distance^2 / diffusivity_of_source_layer
+#-------------------------------------------------------------------------------
+   0.4E+08                           |dble: time_window;
+   512                               |int: no_time_samples;
+################################################################################
+#
+#	WAVENUMBER INTEGRATION PARAMETERS
+#	=================================
+# 1. relative accuracy (0.01 for 1% error) for numerical wavenumber integration;
+#-------------------------------------------------------------------------------
+   0.05                              |dble: accuracy;
+################################################################################
+#
+#	OUTPUTS A: DISPLACEMENT TIME SERIES
+#	===================================
+# 1. select the 2 displacement time series (1/0 = yes/no)
+#    Note Ut = 0
+# 2. file names of these 2 time series
+#-------------------------------------------------------------------------------
+   1           1                        |int: sw_t_files(1-3);
+   'uz2.dat'    'ur2.dat'               |char: t_files(1-3);
+#-------------------------------------------------------------------------------
+#
+#	OUTPUTS B: STRAIN TENSOR & TILT TIME SERIES
+#	===========================================
+# 1. select strain time series (1/0 = yes/no): Ezz, Err, Ett, Ezr (4 tensor
+#    components) and Tlt (= -dur/dz, the radial component of the vertical tilt).
+#    Note Ezt, Ert and Tlt (tangential tilt) = 0
+# 2. file names of these 5 time series
+#-------------------------------------------------------------------------------
+   0         0         0         0         0          |int: sw_t_files(3-7);
+   'ezz.dat' 'err.dat' 'ett.dat' 'ezr.dat' 'tlt.dat'  |char: t_files(3-7);
+#-------------------------------------------------------------------------------
+#
+#	OUTPUTS C: PORE PRESSURE & DARCY VELOCITY TIME SERIES
+#	=====================================================
+# 1. select pore pressure and Darcy velocity time series (1/0 = yes/no):
+#    Pp (excess pore pressure), Dvz, Dvr (2 Darcy velocity components)
+#    Note Dvt = 0
+# 2. file names of these 3 time series
+#-------------------------------------------------------------------------------
+   0          0          0                       |int: sw_t_files(8-10);
+   'pp.dat'   'dvz.dat'  'dvr.dat'               |char: t_files(8-10);
+#-------------------------------------------------------------------------------
+#
+#	OUTPUTS D: SNAPSHOTS OF ALL OBSERVABLES
+#	=======================================
+# 1. number of snapshots
+# 2. time[s] (within the time window, see above) and output filename of
+#    the 1. snapshot
+# 3. ...
+#-------------------------------------------------------------------------------
+    0                                  |int: no_sn;
+#   10.0     'snapshot0010.dat'        |dable: sn_time(i),sn_file(i), i=1,2,...
+#-------------------------------------------------------------------------------
+#
+#	OUTPUTS E: OUTPUT OF EQUIVALENT INJECTION RATE SOURCE
+#              (only selectable for source Option 1,2,3!)
+#	=====================================================
+# 1. select output of equivalent source time function in injection rate [m^3/s]
+#    or moment [Nm]
+# 2. file name of this output
+#-------------------------------------------------------------------------------
+    1                                  |int: selp2q;
+   'eqvq2p_Option_2.dat'               |char: file_p2q
+################################################################################
+#
+#	GLOBAL MODEL PARAMETERS
+#	=======================
+# 1. switch for surface conditions:
+#    0 = without free surface (whole space),
+#    1 = unconfined free surface (p = 0),
+#    2 = confined free surface (dp/dz = 0).
+# 2. number of data lines of the layered model (see Note below)
+#-------------------------------------------------------------------------------
+   1                              |int: isurfcon
+   21                             |int: no_model_lines;
+#-------------------------------------------------------------------------------
+#
+#	MULTILAYERED MODEL PARAMETERS
+#	=============================
+#
+#   Note: mu = shear modulus
+#         nu = Poisson ratio under drained condition
+#         nu_u = Poisson ratio under undrained condition (nu_u > nu)
+#         B = Skempton parameter (the change in pore pressure per unit change
+#             in confining pressure under undrained condition)
+#         D = hydraulic diffusivity
+#
+#   no   depth[m]     mu[Pa]        nu      nu_u         B  D[m^2/s]
+#------------------------------------------------------------------------------- 
+     1   0.000E+00   7.61E+09    0.2500    0.2549    0.3000    0.01500
+     2   2.000E+03   7.61E+09    0.2500    0.2549    0.3000    0.01500
+     3   2.000E+03   8.62E+09    0.2500    0.2705    0.3000    0.01500
+     4   3.000E+03   8.62E+09    0.2500    0.2705    0.3000    0.01500
+     5   3.000E+03   1.51E+10    0.2500    0.2697    0.3000    0.01500
+     6   3.990E+03   1.51E+10    0.2500    0.2697    0.3000    0.01500
+	 7   3.990E+03   1.51E+09    0.2500    0.2697    0.1500    0.15000    !aquifer
+     8   4.000E+03   1.51E+09    0.2500    0.2697    0.1500    0.15000    !aquifer
+     9   4.000E+03   2.19E+10    0.2500    0.2692    0.3000    0.01500
+    10   5.000E+03   2.19E+10    0.2500    0.2692    0.3000    0.01500
+    11   5.000E+03   2.63E+10    0.2500    0.2686    0.3000    0.01500
+    12   6.000E+03   2.63E+10    0.2500    0.2686    0.3000    0.01500
+    13   6.000E+03   3.03E+10    0.2500    0.2691    0.3000    0.01500
+    14   8.000E+03   3.03E+10    0.2500    0.2691    0.3000    0.01500
+    15   8.000E+03   3.73E+10    0.2500    0.2697    0.3000    0.01500
+    16   1.100E+04   3.73E+10    0.2500    0.2697    0.3000    0.01500
+    17   1.100E+04   4.14E+10    0.2500    0.2696    0.3000    0.01500
+    18   2.500E+04   4.14E+10    0.2500    0.2696    0.3000    0.01500
+    19   2.500E+04   5.06E+10    0.2500    0.2702    0.3000    0.01500
+    20   3.400E+04   5.06E+10    0.2500    0.2702    0.3000    0.01500
+    21   3.400E+04   5.54E+10    0.2500    0.2690    0.3000    0.01500
+#-------------------------------------------------------------------------------
+###########################end of all inputs####################################
+
+Note for the model input format and the step-function approximation for model
+parameters varying linearly with depth:
+
+The surface and the upper boundary of the lowest half-space as well as the
+interfaces at which the poroelastic parameters are continuous, are all defined
+by a single data line; All other interfaces, at which the poroelastic parameters
+are discontinuous, are all defined by two data lines (upper-side and lower-side
+values). This input format would also be needed for a graphic plot of the
+layered model. Layers which have different parameter values at top and bottom,
+will be treated as layers with a constant gradient, and will be discretised to a
+number of homogeneous sublayers. Errors due to the discretisation are limited
+within about 5% (changeable, see pealloc.f).
