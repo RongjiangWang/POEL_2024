@@ -8,6 +8,15 @@ Highlights:
 
 (3) wave-number-domain differential filter technique for fast convergence of numerical Hankel transform
 
+For Windows user, the executable file is provided under folder "WindowsEXE". Linux user may compile the source codes with "gfortran" via a single command like, e.g.,
+
+~>cd .../SourceCode
+
+~>gfortran -o poel2024 *.f -O3
+
+to get the excutable code poel2024.
+
+After start the executable code, the program ask for an input file in the ASCII format. An example input file is provided under folder "InputFile". You may change the input data included in this file for your own applications.
 
 References
 
