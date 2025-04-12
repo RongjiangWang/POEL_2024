@@ -21,3 +21,7 @@ After start the executable code, the program ask for an input file in the ASCII 
 References
 
 Wang, R., and H.-J. Kümpel (2003), Poroelasticity: Efficient modelling of strongly coupled, slow deformation processes in a multilayered half-space, Geophysics, 68(2), 705-717.
+
+Silverii, F., F. Maccaferri, G. Richter, B. G. Cansado, R. Wang, S. Hainzl and T. Dahm (2021). Poroelastic model in a vertically sealed gas storage: a case study from cyclic injection/production in a carbonate aquifer. Geophysical Journal International. https://doi.org/10.1093/gji/ggab268.
+
+Flóvenz, Ó. G., R. Wang, G. P. Hersir, T. Dahm, S. Hainzl, M. Vassileva, V. Drouin, S. Heimann, M. P. Isken, E. Á. Gudnason, K. Ágústsson, Th. Ágústsdóttir, J. Horalek, M. Motagh, Th. R. Walter, E. Rivalta, Ph. Jousset , Ch. M. Krawczyk and C. Milkereit (2022). Cyclic unrest in a geothermal field as a harbinger of the Fagradalsfjall eruption, Iceland. Nature Geoscience 15(5). doi:10.1038/s41561-022-00930-5.
